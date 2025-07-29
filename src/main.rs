@@ -1,4 +1,7 @@
-use std::{ops::Range, str::FromStr};
+use std::{
+    ops::{Range, RangeInclusive},
+    str::FromStr,
+};
 
 use clap::Parser;
 use num::{Bounded, FromPrimitive, Num};
@@ -22,8 +25,16 @@ macro_rules! print_result {
         let range = parse_range::<$t>(&$range).expect("Should parse success");
         let mut rng = rng();
         for _ in 0..$n {
-            let res = rng.random_range(range.clone());
-            println!("{res}");
+            match range {
+                RangeType::Range(ref range) => {
+                    let res = rng.random_range(range.clone());
+                    println!("{res}");
+                }
+                RangeType::RangeInclusive(ref range) => {
+                    let res = rng.random_range(range.clone());
+                    println!("{res}");
+                }
+            }
         }
     };
     ($t:ident, $n:ident) => {
@@ -55,7 +66,13 @@ fn main() {
     }
 }
 
-fn parse_range<T>(range: &str) -> Option<Range<T>>
+#[derive(Debug, Clone)]
+enum RangeType<T> {
+    Range(Range<T>),
+    RangeInclusive(RangeInclusive<T>),
+}
+
+fn parse_range<T>(range: &str) -> Option<RangeType<T>>
 where
     T: FromStr + Num + Bounded + FromPrimitive,
 {
@@ -77,12 +94,9 @@ where
         end.parse().ok()?
     };
 
-    Some(Range {
-        start,
-        end: if !is_eq {
-            end
-        } else {
-            end + FromPrimitive::from_u8(1)?
-        },
+    Some(if is_eq {
+        RangeType::RangeInclusive(RangeInclusive::new(start, end))
+    } else {
+        RangeType::Range(Range { start, end })
     })
 }
