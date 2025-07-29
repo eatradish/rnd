@@ -288,7 +288,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rnd"
+name = "rnd-cmd"
 version = "0.1.0"
 dependencies = [
  "clap",
