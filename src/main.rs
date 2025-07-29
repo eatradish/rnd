@@ -5,7 +5,7 @@ use std::{
 
 use clap::Parser;
 use num::{Bounded, Num};
-use rand::{Rng, rng};
+use rand::{Rng, distr::uniform::SampleUniform, rng, rngs::ThreadRng};
 
 #[derive(Debug, Parser)]
 struct App {
@@ -25,16 +25,8 @@ macro_rules! print_result {
         let range = parse_range::<$t>(&$range).expect("Should parse success");
         let mut rng = rng();
         for _ in 0..$n {
-            match range {
-                RangeType::Range(ref range) => {
-                    let res = rng.random_range(range.clone());
-                    println!("{res}");
-                }
-                RangeType::RangeInclusive(ref range) => {
-                    let res = rng.random_range(range.clone());
-                    println!("{res}");
-                }
-            }
+            let res: $t = range.clone().random_range(&mut rng);
+            println!("{res}");
         }
     };
     ($t:ident, $n:ident) => {
@@ -70,6 +62,15 @@ fn main() {
 enum RangeType<T> {
     Range(Range<T>),
     RangeInclusive(RangeInclusive<T>),
+}
+
+impl<T: SampleUniform + PartialOrd> RangeType<T> {
+    fn random_range(self, rng: &mut ThreadRng) -> T {
+        match self {
+            RangeType::Range(range) => rng.random_range(range),
+            RangeType::RangeInclusive(range) => rng.random_range(range),
+        }
+    }
 }
 
 fn parse_range<T>(range: &str) -> Option<RangeType<T>>
