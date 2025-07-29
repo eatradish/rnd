@@ -4,7 +4,7 @@ use std::{
 };
 
 use clap::Parser;
-use num::{Bounded, FromPrimitive, Num};
+use num::{Bounded, Num};
 use rand::{Rng, rng};
 
 #[derive(Debug, Parser)]
@@ -74,7 +74,7 @@ enum RangeType<T> {
 
 fn parse_range<T>(range: &str) -> Option<RangeType<T>>
 where
-    T: FromStr + Num + Bounded + FromPrimitive,
+    T: FromStr + Num + Bounded,
 {
     let (start, end) = range.split_once("..")?;
 
