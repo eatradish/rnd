@@ -50,6 +50,6 @@ curl 'https://api.live.bilibili.com/msg/send' \
     --data-urlencode 'fontsize=25' \
     --data-urlencode 'color=16777215' \
     --data-urlencode "rnd=$(date +%s)";
-    sleep $(rnd 5..=10);
+    sleep $(rnd -f 5..=10);
 done
 ```
