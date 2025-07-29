@@ -1,7 +1,7 @@
 # rnd
 A CLI tool to get random number
 
-## Usahe
+## Usage
 
 Get random number:
 
