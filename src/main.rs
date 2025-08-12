@@ -15,7 +15,7 @@ struct App {
     /// Get result count
     #[arg(short = 'n', long, default_value_t = 1)]
     count: usize,
-    /// Input range (like 1..=10)
+    /// Input range (like 114514..=1919810)
     #[arg(allow_hyphen_values = true)]
     range: Option<String>,
 }
